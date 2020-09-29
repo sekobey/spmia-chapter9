@@ -32,29 +32,28 @@ public class OrganizationService {
         logger.debug("In the organizationService.getOrg() call");
         try {
             return orgRepository.findById(organizationId);
-        }
-        finally{
-          newSpan.tag("peer.service", "postgres");
-          newSpan.logEvent(org.springframework.cloud.sleuth.Span.CLIENT_RECV);
-          tracer.close(newSpan);
+        } finally {
+            newSpan.tag("peer.service", "postgres");
+            newSpan.logEvent(org.springframework.cloud.sleuth.Span.CLIENT_RECV);
+            tracer.close(newSpan);
         }
     }
 
-    public void saveOrg(Organization org){
-        org.setId( UUID.randomUUID().toString());
+    public void saveOrg(Organization org) {
+        org.setId(UUID.randomUUID().toString());
 
         orgRepository.save(org);
         simpleSourceBean.publishOrgChange("SAVE", org.getId());
     }
 
-    public void updateOrg(Organization org){
+    public void updateOrg(Organization org) {
         orgRepository.save(org);
         simpleSourceBean.publishOrgChange("UPDATE", org.getId());
 
     }
 
-    public void deleteOrg(String orgId){
-        orgRepository.delete( orgId );
+    public void deleteOrg(String orgId) {
+        orgRepository.delete(orgId);
         simpleSourceBean.publishOrgChange("DELETE", orgId);
     }
 }
